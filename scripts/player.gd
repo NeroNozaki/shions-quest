@@ -58,8 +58,8 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
-	if can_attack:
-		$player_animation._trigger_animation(velocity, facing_direction)
+
+	$player_animation._trigger_animation(velocity, facing_direction)
 	move_and_slide()
 	#TODO: CHANGE THIS SHIT AS WELL ^
 
