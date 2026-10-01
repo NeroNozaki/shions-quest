@@ -207,7 +207,8 @@ script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"idle"
+animation = &"fall"
+frame = 3
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 

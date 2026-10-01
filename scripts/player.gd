@@ -6,6 +6,10 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 #TODO: CHANGE THIS SHIT
 const SPEED = 200.0
 const JUMP_VELOCITY = -400.0
+const BUFFER_WINDOW := 0.1
+
+var jump_buffer := 0.0
+var attack_buffer := 0.0
 
 @onready var attack_a := $attackA
 @onready var attack_a_shape := [
@@ -25,8 +29,7 @@ enum State {
 	# DEAD,
 }
 
-var jump_start_duration := 0.05
-var is_jump_buffered := false
+var jump_start_duration := 0.03
 
 var state: State = State.IDLE
 var previous_state: State
@@ -51,6 +54,15 @@ func _ready():
 	previous_state = state
 
 func _physics_process(delta):
+	# input buffer. add other actions later
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer = BUFFER_WINDOW
+	if Input.is_action_just_pressed("attack"):
+		attack_buffer = BUFFER_WINDOW
+		
+	attack_buffer = max(0.0, attack_buffer - delta)
+	jump_buffer = max(0.0, jump_buffer - delta)
+
 	# Gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
@@ -58,19 +70,12 @@ func _physics_process(delta):
 	# Horizontal movement
 	var direction = Input.get_axis("left", "right")
 	if direction != 0:
-		facing_direction = direction
+		facing_direction = int(direction)
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
-	# Jump input
-	if Input.is_action_just_pressed("jump") and is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]:
-		start_jump()
-
-	# Attack input
-	if Input.is_action_just_pressed("attack") and can_attack:
-		start_attack()
-
+	try_buffered_action()
 	update_state()
 
 	# Animation
@@ -81,7 +86,7 @@ func _physics_process(delta):
 	print_state_change()
 
 func update_state():
-	# Don't override attack states
+	# Don't override locked states
 	if state in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]:
 		return
 
@@ -94,6 +99,21 @@ func update_state():
 			state = State.IDLE
 	else:
 		state = State.FALL
+
+func try_buffered_action():
+	# if buffer is >0, and can start action, start action.
+	if jump_buffer > 0.0 and can_start_jump():
+		jump_buffer = 0.0
+		start_jump()
+	if attack_buffer > 0.0 and can_start_attack():
+		attack_buffer = 0.0
+		start_attack()
+	
+func can_start_attack() -> bool:
+	return state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]
+
+func can_start_jump() -> bool:
+	return is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]
 
 func start_attack():
 	can_attack = false
