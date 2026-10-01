@@ -18,6 +18,14 @@
 [ext_resource type="Texture2D" uid="uid://blev8jj2j2rx8" path="res://assets/Sprites/Player Sprites/Attacks/AttackA07.png" id="8_l71n6"]
 [ext_resource type="Texture2D" uid="uid://bvc8efyb3wfqq" path="res://assets/Sprites/Player Sprites/Idle, run, jump/idle09.png" id="9_qfm1y"]
 [ext_resource type="Script" uid="uid://bulxciwoig57y" path="res://scripts/player_animation.gd" id="11_d2wvv"]
+[ext_resource type="Texture2D" uid="uid://ydlqenaj75lf" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run01.png" id="18_ujl30"]
+[ext_resource type="Texture2D" uid="uid://dspkiyhb1k5dv" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run02.png" id="19_31cv2"]
+[ext_resource type="Texture2D" uid="uid://6276sbk7kvcm" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run03.png" id="20_pf23h"]
+[ext_resource type="Texture2D" uid="uid://bxi884efp008h" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run04.png" id="21_dt7fs"]
+[ext_resource type="Texture2D" uid="uid://dib53q72a4or" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run05.png" id="22_wqfne"]
+[ext_resource type="Texture2D" uid="uid://b1umdbur3010r" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run06.png" id="23_wnwbv"]
+[ext_resource type="Texture2D" uid="uid://dooj7lhxobbc" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run07.png" id="24_gl8cc"]
+[ext_resource type="Texture2D" uid="uid://b0ja070lf37up" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run08.png" id="25_487ah"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_nqwk7"]
 animations = [{
@@ -78,6 +86,35 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18_ujl30")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_31cv2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_pf23h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_dt7fs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_wqfne")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_wnwbv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_gl8cc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_487ah")
+}],
+"loop": 1,
+"name": &"run",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nqwk7"]
@@ -89,13 +126,15 @@ size = Vector2(23, 27)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1en53"]
 size = Vector2(29.5, 8.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yv0bv"]
+
 [node name="player" type="CharacterBody2D" unique_id=1008955377]
 script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"attackA"
-frame = 1
+animation = &"run"
+frame_progress = 0.56406087
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 
@@ -104,6 +143,7 @@ position = Vector2(1, 26)
 shape = SubResource("RectangleShape2D_nqwk7")
 
 [node name="attackA" type="Area2D" parent="." unique_id=1107992128]
+visible = false
 collision_layer = 2
 collision_mask = 8
 monitoring = false
@@ -116,3 +156,10 @@ shape = SubResource("RectangleShape2D_b6daa")
 [node name="attackA_hitbox2" type="CollisionShape2D" parent="attackA" unique_id=1745629937]
 position = Vector2(-4.75, 18.25)
 shape = SubResource("RectangleShape2D_1en53")
+
+[node name="attackB" type="Area2D" parent="." unique_id=2087917166]
+visible = false
+
+[node name="attackB_hitbox" type="CollisionShape2D" parent="attackB" unique_id=1309380493]
+position = Vector2(65, 31)
+shape = SubResource("RectangleShape2D_yv0bv")

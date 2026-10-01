@@ -17,6 +17,7 @@ const JUMP_VELOCITY = -400.0
 enum STATE {
 	attacking,
 	idle,
+	running,
 	jumping,
 }
 
@@ -57,7 +58,6 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
-	attack_a.is_inside_tree()
 	if can_attack:
 		$player_animation._trigger_animation(velocity, facing_direction)
 	move_and_slide()
