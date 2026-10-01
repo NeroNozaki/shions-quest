@@ -1,0 +1,9 @@
+extends Node
+
+enum {
+	PLAYER_HURTBOX = 1,
+	PLAYER_ATTACK = 2,
+	GROUND = 3,
+	ENEMY_HURTBOX = 4,
+	ENEMY_ATTACK = 5,
+}
