@@ -1,5 +1,4 @@
 extends CharacterBody2D
-
 class_name Player
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -8,49 +7,55 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 const SPEED = 200.0
 const JUMP_VELOCITY = -400.0
 
-
 @onready var attack_a := $attackA
 @onready var attack_a_shape := [
 	$attackA/attackA_hitbox1,
 	$attackA/attackA_hitbox2,
 ]
-enum STATE {
-	attacking,
-	idle,
-	running,
-	jumping,
+
+enum State {
+	IDLE,
+	RUN,
+	JUMP,
+	FALL,
+	LAND,
+	ATTACK_GROUND,
+	ATTACK_AIR,
+	# HURT,
+	# DEAD,
 }
 
-var player_state := STATE.idle
+var jump_start_duration := 0.05
+var is_jump_buffered := false
 
+var state: State = State.IDLE
+var previous_state: State
 var facing_direction := 1
-var can_attack = true
-var attack_duration = 0.3 # how long the attack_a stays active
-var attack_cooldown = 0.5 # time before you can attack again
+var attack_duration := 0.3
+var attack_cooldown := 0.5
+
+var can_attack := true
+var was_on_floor := true
 
 func _ready():
+	$player_animation.play("idle")
 	attack_a.collision_layer = 0
 	attack_a.collision_mask = 0
 	attack_a.monitoring = false
 	for shape in attack_a_shape:
 		shape.disabled = true
 
-	# set layer (what the attack "is")
 	attack_a.set_collision_layer_value(PhysicsLayers.PLAYER_ATTACK, true)
-
-	# set mask (what it can hit)
 	attack_a.set_collision_mask_value(PhysicsLayers.ENEMY_HURTBOX, true)
 
+	previous_state = state
+
 func _physics_process(delta):
-	# gravity
+	# Gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# jump
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# left / right
+	# Horizontal movement
 	var direction = Input.get_axis("left", "right")
 	if direction != 0:
 		facing_direction = direction
@@ -58,31 +63,81 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
+	# Jump input
+	if Input.is_action_just_pressed("jump") and is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]:
+		start_jump()
 
-	$player_animation._trigger_animation(velocity, facing_direction)
-	move_and_slide()
-	#TODO: CHANGE THIS SHIT AS WELL ^
-
+	# Attack input
 	if Input.is_action_just_pressed("attack") and can_attack:
-		attack()
+		start_attack()
 
+	update_state()
 
-func attack():
+	# Animation
+	$player_animation.update_animation(facing_direction)
+
+	was_on_floor = is_on_floor()
+	move_and_slide()
+	print_state_change()
+
+func update_state():
+	# Don't override attack states
+	if state in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]:
+		return
+
+	if is_on_floor():
+		if not was_on_floor:
+			state = State.LAND
+		elif abs(velocity.x) > 10:
+			state = State.RUN
+		else:
+			state = State.IDLE
+	else:
+		state = State.FALL
+
+func start_attack():
 	can_attack = false
-	player_state = STATE.attacking
+
+	if is_on_floor():
+		state = State.ATTACK_GROUND
+	else:
+		state = State.ATTACK_AIR
+
+	# Enable hitbox
+	if state == State.ATTACK_AIR:
+		attack_a.position.y = -4
 	attack_a.monitoring = true
 	for shape in attack_a_shape:
 		shape.disabled = false
 
-	$player_animation._trigger_animation(velocity, facing_direction)
-	
-	# turn attack_a off after a short time
+	# Disable hitbox after duration
 	await get_tree().create_timer(attack_duration).timeout
 	attack_a.monitoring = false
 	for shape in attack_a_shape:
 		shape.disabled = true
-	
-	# cooldown
+
+	# Cooldown
 	await get_tree().create_timer(attack_cooldown - attack_duration).timeout
 	can_attack = true
-	player_state = STATE.idle
+	attack_a.position.y = 0
+
+	# Return to a normal state after attack finishes
+	if is_on_floor():
+		state = State.IDLE if abs(velocity.x) < 10 else State.RUN
+	else:
+		state = State.FALL if velocity.y > 0 else State.JUMP
+
+
+func start_jump():
+	state = State.JUMP
+	await get_tree().create_timer(jump_start_duration).timeout
+
+	if state == State.JUMP:
+		velocity.y = JUMP_VELOCITY
+		state = State.FALL
+	
+
+func print_state_change():
+	if state != previous_state:
+		print("State: ", State.keys()[state])
+		previous_state = state

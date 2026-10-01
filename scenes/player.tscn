@@ -16,16 +16,30 @@
 [ext_resource type="Texture2D" uid="uid://cn5yoeonals5y" path="res://assets/Sprites/Player Sprites/Idle, run, jump/idle07.png" id="7_oprun"]
 [ext_resource type="Texture2D" uid="uid://cwuag4usjvptq" path="res://assets/Sprites/Player Sprites/Idle, run, jump/idle08.png" id="8_a8ls1"]
 [ext_resource type="Texture2D" uid="uid://blev8jj2j2rx8" path="res://assets/Sprites/Player Sprites/Attacks/AttackA07.png" id="8_l71n6"]
+[ext_resource type="Texture2D" uid="uid://dh8guhcpjqt0f" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump01.png" id="9_487ah"]
 [ext_resource type="Texture2D" uid="uid://bvc8efyb3wfqq" path="res://assets/Sprites/Player Sprites/Idle, run, jump/idle09.png" id="9_qfm1y"]
+[ext_resource type="Texture2D" uid="uid://do8a8wr0iethy" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump02.png" id="10_md1ol"]
+[ext_resource type="Texture2D" uid="uid://b13hceondm7vp" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump03.png" id="11_bj30b"]
 [ext_resource type="Script" uid="uid://bulxciwoig57y" path="res://scripts/player_animation.gd" id="11_d2wvv"]
+[ext_resource type="Texture2D" uid="uid://bh3a3dq483iyc" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump04.png" id="12_jc3p3"]
+[ext_resource type="Texture2D" uid="uid://ctrwvfkmnoyuh" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump05.png" id="13_hax0n"]
+[ext_resource type="Texture2D" uid="uid://ddppusd245fq5" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump06.png" id="14_t4otl"]
+[ext_resource type="Texture2D" uid="uid://cm2ow3xb2173d" path="res://assets/Sprites/Player Sprites/Attack in jump/attack_in_jump07.png" id="15_j2b1d"]
+[ext_resource type="Texture2D" uid="uid://dngrgulnw0y5k" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_mid01.png" id="16_cs1tg"]
+[ext_resource type="Texture2D" uid="uid://bgp5qtob5w551" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_mid02.png" id="17_2dvfe"]
+[ext_resource type="Texture2D" uid="uid://d34jbuw6xf2qo" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_mid03.png" id="18_giy8y"]
 [ext_resource type="Texture2D" uid="uid://ydlqenaj75lf" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run01.png" id="18_ujl30"]
 [ext_resource type="Texture2D" uid="uid://dspkiyhb1k5dv" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run02.png" id="19_31cv2"]
+[ext_resource type="Texture2D" uid="uid://dqf63h86kdlth" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_mid04.png" id="19_fdfoy"]
 [ext_resource type="Texture2D" uid="uid://6276sbk7kvcm" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run03.png" id="20_pf23h"]
 [ext_resource type="Texture2D" uid="uid://bxi884efp008h" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run04.png" id="21_dt7fs"]
 [ext_resource type="Texture2D" uid="uid://dib53q72a4or" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run05.png" id="22_wqfne"]
 [ext_resource type="Texture2D" uid="uid://b1umdbur3010r" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run06.png" id="23_wnwbv"]
 [ext_resource type="Texture2D" uid="uid://dooj7lhxobbc" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run07.png" id="24_gl8cc"]
 [ext_resource type="Texture2D" uid="uid://b0ja070lf37up" path="res://assets/Sprites/Player Sprites/Idle, run, jump/run08.png" id="25_487ah"]
+[ext_resource type="Texture2D" uid="uid://cfj065nilt6r1" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_start01.png" id="29_hhpqf"]
+[ext_resource type="Texture2D" uid="uid://dv7t06bt7ejos" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_start02.png" id="30_g5jhy"]
+[ext_resource type="Texture2D" uid="uid://cvkdaggu31ik3" path="res://assets/Sprites/Player Sprites/Idle, run, jump/jump_landing.png" id="31_holxr"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_nqwk7"]
 animations = [{
@@ -53,6 +67,49 @@ animations = [{
 }],
 "loop": 1,
 "name": &"attackA",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_487ah")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_md1ol")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_bj30b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_jc3p3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_hax0n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_t4otl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_j2b1d")
+}],
+"loop": 1,
+"name": &"attackAir",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_cs1tg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_2dvfe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_giy8y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_fdfoy")
+}],
+"loop": 1,
+"name": &"fall",
 "speed": 10.0
 }, {
 "frames": [{
@@ -86,6 +143,25 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29_hhpqf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_g5jhy")
+}],
+"loop": 1,
+"name": &"jump_start",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("31_holxr")
+}],
+"loop": 1,
+"name": &"land",
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -126,15 +202,12 @@ size = Vector2(23, 27)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1en53"]
 size = Vector2(29.5, 8.5)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_yv0bv"]
-
 [node name="player" type="CharacterBody2D" unique_id=1008955377]
 script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"run"
-frame_progress = 0.56406087
+animation = &"idle"
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 
@@ -143,7 +216,6 @@ position = Vector2(1, 26)
 shape = SubResource("RectangleShape2D_nqwk7")
 
 [node name="attackA" type="Area2D" parent="." unique_id=1107992128]
-visible = false
 collision_layer = 2
 collision_mask = 8
 monitoring = false
@@ -156,10 +228,3 @@ shape = SubResource("RectangleShape2D_b6daa")
 [node name="attackA_hitbox2" type="CollisionShape2D" parent="attackA" unique_id=1745629937]
 position = Vector2(-4.75, 18.25)
 shape = SubResource("RectangleShape2D_1en53")
-
-[node name="attackB" type="Area2D" parent="." unique_id=2087917166]
-visible = false
-
-[node name="attackB_hitbox" type="CollisionShape2D" parent="attackB" unique_id=1309380493]
-position = Vector2(65, 31)
-shape = SubResource("RectangleShape2D_yv0bv")
