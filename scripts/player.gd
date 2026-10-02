@@ -11,11 +11,9 @@ const BUFFER_WINDOW := 0.1
 var jump_buffer := 0.0
 var attack_buffer := 0.0
 
-@onready var attack_a := $attackA
-@onready var attack_a_shape := [
-	$attackA/attackA_hitbox1,
-	$attackA/attackA_hitbox2,
-]
+@onready var attack_manager: AttackManager = $Attack
+
+var current_attack: AttackManager.Attack
 
 enum State {
 	IDLE,
@@ -42,14 +40,6 @@ var was_on_floor := true
 
 func _ready():
 	$player_animation.play("idle")
-	attack_a.collision_layer = 0
-	attack_a.collision_mask = 0
-	attack_a.monitoring = false
-	for shape in attack_a_shape:
-		shape.disabled = true
-
-	attack_a.set_collision_layer_value(PhysicsLayers.PLAYER_ATTACK, true)
-	attack_a.set_collision_mask_value(PhysicsLayers.ENEMY_HURTBOX, true)
 
 	previous_state = state
 
@@ -58,6 +48,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer = BUFFER_WINDOW
 	if Input.is_action_just_pressed("attack"):
+		current_attack = attack_manager.A
 		attack_buffer = BUFFER_WINDOW
 		
 	attack_buffer = max(0.0, attack_buffer - delta)
@@ -117,6 +108,7 @@ func can_start_jump() -> bool:
 
 func start_attack():
 	can_attack = false
+	current_attack.ready();
 
 	if is_on_floor():
 		state = State.ATTACK_GROUND
@@ -125,21 +117,17 @@ func start_attack():
 
 	# Enable hitbox
 	if state == State.ATTACK_AIR:
-		attack_a.position.y = -4
-	attack_a.monitoring = true
-	for shape in attack_a_shape:
-		shape.disabled = false
+		current_attack.position.y = -4
+	current_attack.hitbox_enable()
 
 	# Disable hitbox after duration
 	await get_tree().create_timer(attack_duration).timeout
-	attack_a.monitoring = false
-	for shape in attack_a_shape:
-		shape.disabled = true
+	current_attack.hitbox_disable()
 
 	# Cooldown
 	await get_tree().create_timer(attack_cooldown - attack_duration).timeout
 	can_attack = true
-	attack_a.position.y = 0
+	current_attack.position.y = 0
 
 	# Return to a normal state after attack finishes
 	if is_on_floor():

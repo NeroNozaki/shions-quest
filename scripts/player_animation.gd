@@ -6,7 +6,7 @@ func update_animation(direction: int):
 	# Flip sprite + attack hitbox
 	if direction != 0:
 		scale.x = direction
-		player.attack_a.scale.x = direction
+		player.attack_manager.scale.x = direction
 
 	# Play animation based on current state
 	match player.state:
