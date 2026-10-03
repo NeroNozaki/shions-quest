@@ -60,7 +60,7 @@ var air: Attack
 
 func _ready() -> void:
 	A = Attack.new($attackA,
-		1, 0.3, 0.5, 0.04, Vector2(180, -40)
+		1, 0.2, 0.4, 0.04, Vector2(180, -40)
 	)
 
 	# Air attack is the same as A

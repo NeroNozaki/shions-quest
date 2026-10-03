@@ -4,7 +4,7 @@ class_name Player
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 #TODO: CHANGE THIS SHIT
-const SPEED = 200.0
+const SPEED = 190.0
 const JUMP_VELOCITY = -400.0
 const BUFFER_WINDOW := 0.1
 
@@ -18,7 +18,6 @@ var current_attack: AttackManager.Attack
 enum State {
 	IDLE,
 	RUN,
-	JUMP,
 	FALL,
 	LAND,
 	ATTACK_GROUND,
@@ -81,7 +80,7 @@ func _physics_process(delta):
 
 func update_state():
 	# Don't override locked states
-	if state in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]:
+	if state in [State.ATTACK_GROUND, State.ATTACK_AIR]:
 		return
 
 	if is_on_floor():
@@ -107,10 +106,10 @@ func try_buffered_action():
 		start_attack()
 	
 func can_start_attack() -> bool:
-	return state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]
+	return state not in [State.ATTACK_GROUND, State.ATTACK_AIR]
 
 func can_start_jump() -> bool:
-	return is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR, State.JUMP]
+	return is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR]
 
 func start_attack():
 	can_attack = false
@@ -149,16 +148,12 @@ func start_attack():
 	if is_on_floor():
 		state = State.IDLE if abs(velocity.x) < 10 else State.RUN
 	else:
-		state = State.FALL if velocity.y > 0 else State.JUMP
+		state = State.FALL
 
 
 func start_jump():
-	state = State.JUMP
-	await get_tree().create_timer(jump_start_duration).timeout
-
-	if state == State.JUMP:
-		velocity.y = JUMP_VELOCITY
-		state = State.FALL
+	velocity.y = JUMP_VELOCITY
+	state = State.FALL
 	
 func cancel_attack() -> void:
 	current_attack.hitbox_disable()
