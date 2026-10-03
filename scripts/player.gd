@@ -32,8 +32,6 @@ var jump_start_duration := 0.03
 var state: State = State.IDLE
 var previous_state: State
 var facing_direction := 1
-var attack_duration := 0.3
-var attack_cooldown := 0.5
 
 var can_attack := true
 var was_on_floor := true
@@ -73,6 +71,11 @@ func _physics_process(delta):
 	$player_animation.update_animation(facing_direction)
 
 	was_on_floor = is_on_floor()
+
+	# Cancel air attack on the moment of landing
+	if state == State.ATTACK_AIR and is_on_floor():
+		cancel_attack()
+
 	move_and_slide()
 	print_state_change()
 
@@ -89,7 +92,10 @@ func update_state():
 		else:
 			state = State.IDLE
 	else:
-		state = State.FALL
+		if state == State.ATTACK_AIR and is_on_floor():
+			pass
+		else:
+			state = State.FALL
 
 func try_buffered_action():
 	# if buffer is >0, and can start action, start action.
@@ -108,26 +114,36 @@ func can_start_jump() -> bool:
 
 func start_attack():
 	can_attack = false
-	current_attack.ready();
 
 	if is_on_floor():
 		state = State.ATTACK_GROUND
+		current_attack = attack_manager.A
 	else:
 		state = State.ATTACK_AIR
+		current_attack = attack_manager.air
 
 	# Enable hitbox
-	if state == State.ATTACK_AIR:
-		current_attack.position.y = -4
+	if current_attack == attack_manager.air:
+		current_attack.area.position.y = -4
+
 	current_attack.hitbox_enable()
 
-	# Disable hitbox after duration
-	await get_tree().create_timer(attack_duration).timeout
+	var duration = current_attack.duration
+	var cooldown = current_attack.cooldown
+
+	# keep hitbox on for duration of attack
+	await get_tree().create_timer(duration).timeout
+	
+	# if canceled while waiting, just exit
+	if state != State.ATTACK_GROUND and state != State.ATTACK_AIR:
+		return
+
 	current_attack.hitbox_disable()
 
 	# Cooldown
-	await get_tree().create_timer(attack_cooldown - attack_duration).timeout
+	await get_tree().create_timer(cooldown - duration).timeout
 	can_attack = true
-	current_attack.position.y = 0
+	current_attack.area.position.y = 0
 
 	# Return to a normal state after attack finishes
 	if is_on_floor():
@@ -144,6 +160,14 @@ func start_jump():
 		velocity.y = JUMP_VELOCITY
 		state = State.FALL
 	
+func cancel_attack() -> void:
+	current_attack.hitbox_disable()
+	can_attack = true
+
+	if is_on_floor():
+		state = State.LAND
+	else:
+		state = State.FALL
 
 func print_state_change():
 	if state != previous_state:

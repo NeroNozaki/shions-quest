@@ -88,7 +88,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"attackA",
-"speed": 10.0
+"speed": 11.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -114,7 +114,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"attackAir",
-"speed": 10.0
+"speed": 11.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -303,7 +303,7 @@ script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"fall"
+animation = &"attackA"
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 
