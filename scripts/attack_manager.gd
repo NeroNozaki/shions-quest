@@ -4,26 +4,29 @@ class_name AttackManager
 class Attack:
 	var area: Area2D
 	var hitboxes: Array = []
-	var duration: float
-	var cooldown: float
+	var active: float
+	var recovery: float
 	var startup: float
+	var total_duration: float
 	var damage: int
 	var knockback: Vector2
 
 	func _init(
 		p_area: Area2D,
 		p_damage: int = 1,
-		p_duration: float = 0.22,
-		p_cooldown: float = 0.35,
+		p_active: float = 0.22,
+		p_recovery: float = 0.35,
 		p_startup: float = 0.04,
 		p_knockback: Vector2 = Vector2(180, -40)
 	) -> void:
-		self.area       = p_area
-		self.damage		= p_damage
-		self.duration	= p_duration
-		self.cooldown	= p_cooldown
-		self.startup  	= p_startup
-		self.knockback	= p_knockback
+
+		self.area           = p_area
+		self.damage         = p_damage
+		self.active         = p_active
+		self.recovery       = p_recovery
+		self.startup        = p_startup
+		self.knockback      = p_knockback
+		self.total_duration = p_startup+p_active+p_recovery
 
 		for child in area.get_children():
 			if child is CollisionShape2D:
