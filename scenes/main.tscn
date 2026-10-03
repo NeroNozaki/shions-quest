@@ -2,10 +2,20 @@
 
 [ext_resource type="PackedScene" uid="uid://4kdoa06akh7a" path="res://scenes/test_level.tscn" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://cxiq3sf00qkrc" path="res://scenes/player.tscn" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://8y5eopdbsoi6" path="res://scenes/enemies/enemy01.tscn" id="3_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://dxows66itule7" path="res://scenes/enemies/enemy02.tscn" id="4_tbgi4"]
 
 [node name="main" type="Node" unique_id=336037882]
 
 [node name="TestLevel" parent="." unique_id=1771825604 instance=ExtResource("1_0wfyh")]
+position = Vector2(0, 296)
 
 [node name="player" parent="." unique_id=1008955377 instance=ExtResource("2_sugp2")]
-position = Vector2(316, 155)
+position = Vector2(323, 296)
+
+[node name="enemy01" parent="." unique_id=677523928 instance=ExtResource("3_jyhfs")]
+position = Vector2(320, 164)
+motion_mode = 1
+
+[node name="enemy02" parent="." unique_id=1806851675 instance=ExtResource("4_tbgi4")]
+position = Vector2(161, 296)

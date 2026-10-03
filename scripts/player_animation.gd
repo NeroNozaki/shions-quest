@@ -23,6 +23,7 @@ func update_animation(direction: int) -> void:
 			attack_start = false
 
 		play(desired_anim)
+		
 
 
 

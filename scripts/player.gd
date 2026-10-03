@@ -144,7 +144,8 @@ func start_attack():
 		current_attack = attack_manager.air
 		current_attack.area.position.y = -4
 
-	$player_animation.start_windup(current_attack.startup)
+	if current_attack.has_windup:
+		$player_animation.start_windup(current_attack.startup)
 
 	# wait for startup
 	if current_attack.startup > 0.0:

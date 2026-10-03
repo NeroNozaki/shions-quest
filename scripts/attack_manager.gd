@@ -10,14 +10,16 @@ class Attack:
 	var total_duration: float
 	var damage: int
 	var knockback: Vector2
+	var has_windup: bool
 
 	func _init(
-		p_area: Area2D,
-		p_damage: int = 1,
-		p_active: float = 0.22,
-		p_recovery: float = 0.35,
-		p_startup: float = 0.04,
-		p_knockback: Vector2 = Vector2(180, -40)
+		p_area      : Area2D,
+		p_damage    : int = 1,
+		p_active    : float = 0.22,
+		p_recovery  : float = 0.35,
+		p_startup   : float = 0.04,
+		p_knockback : Vector2 = Vector2(180, -40),
+		p_has_windup: bool = false,
 	) -> void:
 
 		self.area           = p_area
@@ -26,7 +28,12 @@ class Attack:
 		self.recovery       = p_recovery
 		self.startup        = p_startup
 		self.knockback      = p_knockback
-		self.total_duration = p_startup+p_active+p_recovery
+		self.total_duration = p_active+p_recovery
+		self.has_windup 	= p_has_windup
+
+		if self.has_windup:
+			self.total_duration += p_startup
+
 
 		for child in area.get_children():
 			if child is CollisionShape2D:
@@ -63,11 +70,11 @@ var air: Attack
 
 func _ready() -> void:
 	A = Attack.new($attackA,
-		1, 0.2, 0.4, 0.0, Vector2(180, -40)
+		1, 0.2, 0.3, 0.1, Vector2(180, -40)
 	)
 
 	B = Attack.new($attackB,
-		1, 0.5, 0.6, 0.3, Vector2(180, -40)
+		3, 0.3, 0.0, 0.3, Vector2(180, -40), true
 	)
 
 	# Air attack is the same as A
