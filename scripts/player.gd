@@ -3,14 +3,6 @@ class_name Player
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-#TODO: CHANGE THIS SHIT
-const SPEED = 190.0
-const JUMP_VELOCITY = -400.0
-const BUFFER_WINDOW := 0.1
-
-var jump_buffer := 0.0
-var attack_buffer := 0.0
-
 @onready var attack_manager: AttackManager = $Attack
 
 var current_attack: AttackManager.Attack
@@ -26,12 +18,26 @@ enum State {
 	# DEAD,
 }
 
+const SPEED = 190.0
+const JUMP_VELOCITY = -450.0
+const JUMP_CUT_MULTIPLIER := 0.25   # this controls how fast the player decelerates when cutting the jump
+const MIN_JUMP_TIME := 0.09         # minimum time the button must be held
+const BUFFER_WINDOW := 0.1
+
+var jump_held_time := 0.0
+var is_jumping := false
+
+var jump_buffer := 0.0
+var attack_buffer := 0.0
+
 var jump_start_duration := 0.03
 
 var state: State = State.IDLE
 var previous_state: State
 var facing_direction := 1
 
+var attack_id = 0;
+var active_attack_id = 0;
 var can_attack := true
 var was_on_floor := true
 
@@ -45,7 +51,6 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer = BUFFER_WINDOW
 	if Input.is_action_just_pressed("attack"):
-		current_attack = attack_manager.A
 		attack_buffer = BUFFER_WINDOW
 		
 	attack_buffer = max(0.0, attack_buffer - delta)
@@ -58,25 +63,36 @@ func _physics_process(delta):
 	# Horizontal movement
 	var direction = Input.get_axis("left", "right")
 	if direction != 0:
-		facing_direction = int(direction)
 		velocity.x = direction * SPEED
+		if state not in [State.ATTACK_GROUND, State.ATTACK_AIR]:
+			facing_direction = int(direction)
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+	
+	# Variable jump height
+	if is_jumping:
+		jump_held_time += delta
+	
+		if velocity.y < 0:
+			if not Input.is_action_pressed("jump") and jump_held_time >= MIN_JUMP_TIME:
+				velocity.y *= JUMP_CUT_MULTIPLIER
+				is_jumping = false
+		else:
+			is_jumping = false
 
-	try_buffered_action()
-	update_state()
-
-	# Animation
-	$player_animation.update_animation(facing_direction)
-
-	was_on_floor = is_on_floor()
-
+	
 	# Cancel air attack on the moment of landing
 	if state == State.ATTACK_AIR and is_on_floor():
 		cancel_attack()
 
+	try_buffered_action()
+	update_state()
+
+	was_on_floor = is_on_floor()
+
 	move_and_slide()
 	print_state_change()
+
 
 func update_state():
 	# Don't override locked states
@@ -91,10 +107,7 @@ func update_state():
 		else:
 			state = State.IDLE
 	else:
-		if state == State.ATTACK_AIR and is_on_floor():
-			pass
-		else:
-			state = State.FALL
+		state = State.FALL
 
 func try_buffered_action():
 	# if buffer is >0, and can start action, start action.
@@ -112,19 +125,26 @@ func can_start_jump() -> bool:
 	return is_on_floor() and state not in [State.ATTACK_GROUND, State.ATTACK_AIR]
 
 func start_attack():
+	attack_id+=1
+	var this_attack_id = attack_id
+	active_attack_id = this_attack_id
 	can_attack = false
 
 	if is_on_floor():
 		state = State.ATTACK_GROUND
-		current_attack = attack_manager.A
+		if Input.is_action_pressed("down"):
+			current_attack = attack_manager.B
+		else:
+			current_attack = attack_manager.A
 	else:
 		state = State.ATTACK_AIR
 		current_attack = attack_manager.air
-
-	# Enable hitbox
-	if current_attack == attack_manager.air:
 		current_attack.area.position.y = -4
 
+	# wait for startup
+	await get_tree().create_timer(current_attack.startup+0.1).timeout
+
+	# Enable hitbox
 	current_attack.hitbox_enable()
 
 	var duration = current_attack.duration
@@ -137,12 +157,22 @@ func start_attack():
 	if state != State.ATTACK_GROUND and state != State.ATTACK_AIR:
 		return
 
+	# if another attack is triggered, exit
+	if this_attack_id != active_attack_id:
+		return
+
 	current_attack.hitbox_disable()
 
 	# Cooldown
 	await get_tree().create_timer(cooldown - duration).timeout
+	
+	# if another attack is triggered, exit
+	if this_attack_id != active_attack_id:
+		return
+
 	can_attack = true
 	current_attack.area.position.y = 0
+	current_attack = null
 
 	# Return to a normal state after attack finishes
 	if is_on_floor():
@@ -150,19 +180,24 @@ func start_attack():
 	else:
 		state = State.FALL
 
-
-func start_jump():
-	velocity.y = JUMP_VELOCITY
-	state = State.FALL
-	
 func cancel_attack() -> void:
-	current_attack.hitbox_disable()
-	can_attack = true
-
 	if is_on_floor():
 		state = State.LAND
 	else:
 		state = State.FALL
+
+	active_attack_id = -1
+	current_attack.hitbox_disable()
+	current_attack = null
+	can_attack = true
+
+
+func start_jump():
+	velocity.y = JUMP_VELOCITY
+	is_jumping = true
+	jump_held_time = 0.0
+	state = State.FALL
+	
 
 func print_state_change():
 	if state != previous_state:

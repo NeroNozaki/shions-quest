@@ -69,7 +69,7 @@ jump={
 [physics]
 
 3d/physics_engine="Jolt Physics"
-2d/default_gravity=1000.0
+2d/default_gravity=1300.0
 
 [rendering]
 

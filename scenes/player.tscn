@@ -88,7 +88,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"attackA",
-"speed": 10.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -114,7 +114,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"attackAir",
-"speed": 10.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -298,12 +298,16 @@ size = Vector2(23, 27)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1en53"]
 size = Vector2(29.5, 8.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yv0bv"]
+size = Vector2(43, 12)
+
 [node name="player" type="CharacterBody2D" unique_id=1008955377]
 script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"attackA"
+animation = &"attackB"
+frame = 1
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 
@@ -327,3 +331,9 @@ shape = SubResource("RectangleShape2D_b6daa")
 [node name="hitbox2" type="CollisionShape2D" parent="Attack/attackA" unique_id=1745629937]
 position = Vector2(-4.75, 18.25)
 shape = SubResource("RectangleShape2D_1en53")
+
+[node name="attackB" type="Area2D" parent="Attack" unique_id=945469231]
+
+[node name="hitbox" type="CollisionShape2D" parent="Attack/attackB" unique_id=922569930]
+position = Vector2(14.5, 14)
+shape = SubResource("RectangleShape2D_yv0bv")
