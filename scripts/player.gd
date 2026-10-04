@@ -18,7 +18,7 @@ enum State {
 	# DEAD,
 }
 
-const SPEED = 190.0
+const SPEED = 150.0
 const JUMP_VELOCITY = -450.0
 const JUMP_CUT_MULTIPLIER := 0.25   # this controls how fast the player decelerates when cutting the jump
 const MIN_JUMP_TIME := 0.09         # minimum time the button must be held
@@ -39,13 +39,20 @@ var facing_direction := 1
 var attack_id := 0;
 var active_attack_id := 0;
 var can_attack := true
+
+
+var recoil_remaining := Vector2(0.0, 0.0)
+var recoil_speed := 0.0
+const RECOIL_DURATION := 0.07
+
 var can_move := true
 var was_on_floor := true
 
 func _ready():
 	$player_animation.play("idle")
-
 	previous_state = state
+
+	attack_manager.attack_landed.connect(_on_attack_landed)
 
 func _physics_process(delta):
 	# input buffer. add other actions later
@@ -61,15 +68,30 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
+	
+	if is_on_floor() and recoil_remaining.x <= 0.0:
+		velocity.x = move_toward(velocity.x, 0, 600 * delta)
+
 	# Horizontal movement
-	var direction = Input.get_axis("left", "right")
-	if can_move:
-		if direction != 0:
-			velocity.x = direction * SPEED
-			if state not in [State.ATTACK_GROUND, State.ATTACK_AIR]:
-				facing_direction = int(direction)
-		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
+	if recoil_remaining.x > 0.0:
+		var step = recoil_speed * delta
+		if step > recoil_remaining.x: step = recoil_remaining.x
+
+		velocity.x = -facing_direction * (step / delta)
+		recoil_remaining.x -= step
+
+		if recoil_remaining.y != 0.0:
+			velocity.y = recoil_remaining.y
+			recoil_remaining.y = 0.0
+	else:
+		var direction = Input.get_axis("left", "right")
+		if can_move:
+			if direction != 0:
+				velocity.x = direction * SPEED
+				if state not in [State.ATTACK_GROUND, State.ATTACK_AIR]:
+					facing_direction = int(direction)
+			else:
+				velocity.x = move_toward(velocity.x, 0, SPEED)
 	
 	# Variable jump height
 	if is_jumping:
@@ -202,13 +224,19 @@ func cancel_attack() -> void:
 	current_attack = null
 	can_attack = true
 
-
 func start_jump():
 	velocity.y = JUMP_VELOCITY
 	is_jumping = true
 	jump_held_time = 0.0
 	state = State.FALL
 	
+func _on_attack_landed(knockback: Vector2) -> void:
+	# knockback is a distance in pixels
+	recoil_remaining.x = abs(knockback.x)
+	recoil_speed = recoil_remaining.x / RECOIL_DURATION
+
+	# knockback.y is an instant vertical impulse
+	recoil_remaining.y = knockback.y
 
 func print_state_change():
 	if state != previous_state:

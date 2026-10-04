@@ -12,9 +12,6 @@ func _physics_process(delta: float) -> void:
 		super._physics_process(delta)
 		return
 
-	# Simple patrol
-	velocity.x = direction * move_speed
-
 	patrol()
 
 	if abs(velocity.x) > 5 and sprite.animation != "hit":

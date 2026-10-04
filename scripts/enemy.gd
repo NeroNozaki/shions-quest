@@ -6,6 +6,8 @@ class_name Enemy
 @export var move_speed: float = 40.0
 @export var patrol_distance: float = 80.0
 
+var hitstun_time: float = 0.0
+const HITSTUN_DURATION := 0.25
 
 var returning_home := false
 var start: Vector2
@@ -45,6 +47,9 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	if hitstun_time > 0.0:
+		hitstun_time -= delta
+
 	# Gravity
 	if !is_flying:
 		if not is_on_floor():
@@ -53,7 +58,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = 0
 	
 	# Friction after knockback
-	if is_on_floor():
+	if is_on_floor() and hitstun_time <= 0.0:
 		velocity.x = move_toward(velocity.x, 0, 600 * delta)
 	
 	move_and_slide()
@@ -64,14 +69,15 @@ func _on_hurtbox_area_entered(area: Area2D) -> void:
 	
 	# Only react to player attacks
 	if area.get_collision_layer_value(PhysicsLayers.PLAYER_ATTACK):
-		take_damage(1, area)
+		var dmg: int = area.get_meta("damage", 1)
+		take_damage(dmg, area)
 
 func take_damage(amount: int, attack_area: Area2D = null) -> void:
 	if is_dead:
 		return
 	
 	health -= amount
-	print(name, " took damage. Health left: ", health)
+	print(name, " took ", amount, " damage. Health left: ", health)
 	
 	var knock_dir := 1
 	if attack_area:
@@ -81,6 +87,7 @@ func take_damage(amount: int, attack_area: Area2D = null) -> void:
 	
 	velocity = Vector2(knockback_force.x * knock_dir, knockback_force.y)
 	_flash()
+	hitstun_time = HITSTUN_DURATION
 	
 	if health <= 0:
 		die()
@@ -119,7 +126,7 @@ func die() -> void:
 	queue_free()
 
 func patrol() -> void:
-	if is_dead:
+	if is_dead and hitstun_time > 0.0:
 		return
 	
 	velocity.x = direction * move_speed

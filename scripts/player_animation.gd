@@ -4,11 +4,15 @@ extends AnimatedSprite2D
 
 var current_anim: StringName = &""
 var attack_start := false
+var in_windup := false
 
 func _process(_delta: float) -> void:
 	update_animation(player.facing_direction)
 
 func update_animation(direction: int) -> void:
+	if in_windup:
+		return
+
 	if direction != 0:
 		scale.x = direction
 		player.attack_manager.scale.x = direction
@@ -19,13 +23,11 @@ func update_animation(direction: int) -> void:
 	if desired_anim != current_anim:
 		current_anim = desired_anim
 		if attack_start == true and player.current_attack:
-			match_attack_animation(desired_anim, player.current_attack.total_duration)
+			match_attack_animation(desired_anim, player.current_attack)
 			attack_start = false
 
 		play(desired_anim)
 		
-
-
 
 func get_desired_animation() -> StringName:
 	match player.state:
@@ -53,19 +55,35 @@ func get_desired_animation() -> StringName:
 
 
 func start_windup(startup_time:float) -> void:
-	if startup_time <= 0.0:
-		return
+	if startup_time <= 0.0: return
+	in_windup = true
 
-	pause()
+	var anim_name: StringName
+	if player.current_attack == player.attack_manager.B:
+		anim_name = &"attackB"
+	else:
+		anim_name = &"attackA"
+
+	play(anim_name)
 	frame = 0
+	pause()
 
 	await get_tree().create_timer(startup_time).timeout
 
+	in_windup = false
+
 	# Only resume if we’re still supposed to be playing this attack
-	if current_anim == &"attackB" and player.state == player.State.ATTACK_GROUND:
+	if (current_anim.begins_with("attack") and player.state in 
+	[player.State.ATTACK_GROUND, player.State.ATTACK_AIR]):
 		play()
 
-func match_attack_animation(anim_name: StringName, desired_total_duration: float) -> void:
+func match_attack_animation(anim_name: StringName, attack:AttackManager.Attack) -> void:
 	var frames = sprite_frames.get_frame_count(anim_name)
-	var speed = frames / desired_total_duration
+
+	# animation should only playe during active + recovery
+	# startup is handled by the pause
+	var play_duration = attack.active + attack.recovery
+	if play_duration <= 0.01: play_duration = 0.01
+
+	var speed = frames / play_duration
 	sprite_frames.set_animation_speed(anim_name, speed)

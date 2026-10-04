@@ -1,6 +1,8 @@
 extends Node2D
 class_name AttackManager
 
+signal attack_landed(knockback: Vector2)
+
 class Attack:
 	var area: Area2D
 	var hitboxes: Array = []
@@ -40,6 +42,9 @@ class Attack:
 				child.disabled = true
 				hitboxes.append(child)
 
+		area.set_meta("damage", damage)
+		area.set_meta("knockback", knockback)
+
 	func ready():
 		area.collision_layer = 0
 		area.collision_mask = 0
@@ -56,9 +61,6 @@ class Attack:
 		area.monitoring = false
 		for hitbox in hitboxes:
 			hitbox.disabled = true
-	
-
-
 
 
 # these are the actual attacks
@@ -70,12 +72,19 @@ var air: Attack
 
 func _ready() -> void:
 	A = Attack.new($attackA,
-		1, 0.2, 0.3, 0.1, Vector2(180, -40)
+		1, 0.1, 0.3, 0.1, Vector2(50, 0)
 	)
-
 	B = Attack.new($attackB,
-		3, 0.3, 0.0, 0.3, Vector2(180, -40), true
+		3, 0.3, 0.0, 0.3, Vector2(70, 0), true
 	)
 
 	# Air attack is the same as A
 	air = A
+	
+	A.area.area_entered.connect(_on_attack_area_entered.bind(A))
+	B.area.area_entered.connect(_on_attack_area_entered.bind(B))
+
+func _on_attack_area_entered(area: Area2D, attack: Attack) -> void:
+	if not area.get_collision_layer_value(PhysicsLayers.ENEMY_HURTBOX): return
+
+	attack_landed.emit(attack.knockback)

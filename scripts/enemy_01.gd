@@ -16,7 +16,6 @@ func _physics_process(delta: float) -> void:
 		return
 
 	time += delta
-
 	patrol()
 
 	# Simple up-and-down hover
