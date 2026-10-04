@@ -1,16 +1,27 @@
 extends CharacterBody2D
 class_name Enemy
 
-@export var max_health: int = 2
+enum AIState { PATROL, CHASE, ATTACK, HURT }
+var state := AIState.PATROL
+var previous_state = state
+
+@export var max_health: int = 3
 @export var knockback_force: Vector2 = Vector2(120, -80)
 @export var move_speed: float = 40.0
 @export var patrol_distance: float = 80.0
+
+@export var detection_range: float = 160.0
+@export var attack_range: float = 28.0
+@export var attack_cooldown: float = 1.2
+
+var attack_timer: float = 0.0
+var player: Player = null
 
 var hitstun_time: float = 0.0
 const HITSTUN_DURATION := 0.25
 
 var returning_home := false
-var start: Vector2
+var home: Vector2
 var time: float = 0.0
 var direction: int = 1
 
@@ -26,8 +37,10 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready() -> void:
 	_update_facing()
-	start = Vector2(global_position.x, global_position.y)
+	home = Vector2(global_position.x, global_position.y)
 	health = max_health
+	player = get_tree().get_first_node_in_group("player") as Player
+	previous_state = state
 	
 	# Layer setup (universal)
 	hurtbox.collision_layer = 0
@@ -38,7 +51,9 @@ func _ready() -> void:
 	
 	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
 	
-	if sprite.sprite_frames.has_animation("idle"):
+	if sprite.sprite_frames.has_animation("fly"):
+		sprite.play("fly")
+	else:
 		sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
@@ -47,21 +62,38 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	# skip AI behavior while in hitstun
 	if hitstun_time > 0.0:
 		hitstun_time -= delta
+		_apply_physics(delta)
+		return
 
+	attack_timer = max(0.0, attack_timer - delta)
+	
+	# children implement their AI here
+	_update_ai(delta)
+
+	_apply_physics(delta)
+	print_state_change()
+
+
+func _apply_physics(delta:float):
 	# Gravity
-	if !is_flying:
+	if not is_flying:
 		if not is_on_floor():
 			velocity.y += gravity * delta
 		else:
 			velocity.y = 0
-	
-	# Friction after knockback
-	if is_on_floor() and hitstun_time <= 0.0:
+
+	# Friction only when not being forced by AI
+	if is_on_floor() and state == AIState.PATROL:
 		velocity.x = move_toward(velocity.x, 0, 600 * delta)
-	
+
 	move_and_slide()
+
+func _update_ai(delta:float):
+	# this method is meant to be overriden by children
+	pass
 
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if is_dead:
@@ -73,9 +105,10 @@ func _on_hurtbox_area_entered(area: Area2D) -> void:
 		take_damage(dmg, area)
 
 func take_damage(amount: int, attack_area: Area2D = null) -> void:
-	if is_dead:
+	if is_dead or state == AIState.HURT:
 		return
 	
+	attack_timer = 0.0
 	health -= amount
 	print(name, " took ", amount, " damage. Health left: ", health)
 	
@@ -86,8 +119,10 @@ func take_damage(amount: int, attack_area: Area2D = null) -> void:
 			knock_dir = 1
 	
 	velocity = Vector2(knockback_force.x * knock_dir, knockback_force.y)
-	_flash()
 	hitstun_time = HITSTUN_DURATION
+	_flash()
+
+	state = AIState.HURT
 	
 	if health <= 0:
 		die()
@@ -95,14 +130,16 @@ func take_damage(amount: int, attack_area: Area2D = null) -> void:
 	
 	if sprite.sprite_frames.has_animation("hit"):
 		sprite.play("hit")
-		await sprite.animation_finished
-		if not is_dead and sprite.animation == "hit":
+		await get_tree().create_timer(HITSTUN_DURATION).timeout
+		if not is_dead:
 			# Let the child decide what to play after hit
 			_on_hit_finished()
 
 func _on_hit_finished() -> void:
-	# Override this in children if you want different behaviour
-	if sprite.sprite_frames.has_animation("idle"):
+	# Override this in children to get different behavior
+	if is_flying and sprite.sprite_frames.has_animation("fly"):
+		sprite.play("fly")
+	else:
 		sprite.play("idle")
 
 func _flash() -> void:
@@ -126,13 +163,13 @@ func die() -> void:
 	queue_free()
 
 func patrol() -> void:
-	if is_dead and hitstun_time > 0.0:
+	if is_dead or hitstun_time > 0.0:
 		return
 	
 	velocity.x = direction * move_speed
 	
 	# Turn around when we go too far from the starting point
-	if abs(global_position.x - start.x) > patrol_distance and !returning_home:
+	if abs(global_position.x - home.x) > patrol_distance and !returning_home:
 		returning_home = true
 		direction *= -1
 		_update_facing()
@@ -142,3 +179,8 @@ func patrol() -> void:
 func _update_facing() -> void:
 	# Flip the whole sprite (and any child hitboxes that are under it)
 	sprite.scale.x = direction
+
+func print_state_change():
+	if state != previous_state:
+		print(name, ": ", AIState.keys()[state])
+		previous_state = state

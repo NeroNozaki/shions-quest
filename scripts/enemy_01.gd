@@ -5,27 +5,39 @@ extends Enemy
 
 func _ready() -> void:
 	is_flying = true
-	super._ready()
+	max_health = 2
 	move_speed = 50.0
 	patrol_distance = 100.0
-	start = Vector2(global_position.x, global_position.y)
+
+	super._ready()
+
+	home = global_position
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		super._physics_process(delta)
 		return
-
+	# up-and-down hover
 	time += delta
-	patrol()
-
-	# Simple up-and-down hover
 	velocity.y = sin(time * hover_speed) * hover_amplitude
+	super._physics_process(delta)
 
-	# Play the fly animation
-	if sprite.animation != "hit":
-		if sprite.sprite_frames.has_animation("fly"):
+func _update_ai(delta:float):
+	match state:
+		AIState.PATROL:
+			_patrol_logic()
+		AIState.HURT:
+			_hurt_logic()
+
+func _patrol_logic():
+	patrol()
+	
+	# animation
+	if hitstun_time <= 0.0 and sprite.animation != "hit":
+		if abs(velocity.x) > 5:
 			sprite.play("fly")
-		elif sprite.sprite_frames.has_animation("idle"):
+		else:
 			sprite.play("idle")
 
-	super._physics_process(delta)
+func _hurt_logic():
+	state = AIState.PATROL

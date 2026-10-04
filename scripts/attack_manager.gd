@@ -9,6 +9,7 @@ class Attack:
 	var active: float
 	var recovery: float
 	var startup: float
+	var extra_startup: float
 	var total_duration: float
 	var damage: int
 	var knockback: Vector2
@@ -30,11 +31,7 @@ class Attack:
 		self.recovery       = p_recovery
 		self.startup        = p_startup
 		self.knockback      = p_knockback
-		self.total_duration = p_active+p_recovery
 		self.has_windup 	= p_has_windup
-
-		if self.has_windup:
-			self.total_duration += p_startup
 
 
 		for child in area.get_children():
@@ -72,11 +69,12 @@ var air: Attack
 
 func _ready() -> void:
 	A = Attack.new($attackA,
-		1, 0.1, 0.3, 0.1, Vector2(50, 0)
+		1, 0.1, 0.3, 0.1, Vector2(30, 0)
 	)
 	B = Attack.new($attackB,
-		3, 0.3, 0.0, 0.3, Vector2(70, 0), true
+		3, 0.3, 0.0, 0.3, Vector2(50, 0), true
 	)
+	B.extra_startup = -0.1
 
 	# Air attack is the same as A
 	air = A

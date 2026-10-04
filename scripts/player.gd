@@ -1,4 +1,5 @@
 extends CharacterBody2D
+
 class_name Player
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -167,7 +168,7 @@ func start_attack():
 		current_attack.area.position.y = -4
 
 	if current_attack.has_windup:
-		$player_animation.start_windup(current_attack.startup)
+		$player_animation.start_windup(current_attack.startup, current_attack.extra_startup)
 
 	# wait for startup
 	if current_attack.startup > 0.0:
@@ -240,7 +241,7 @@ func _on_attack_landed(knockback: Vector2) -> void:
 
 func print_state_change():
 	if state != previous_state:
-		print("State: ", State.keys()[state])
+		print("Player: ", State.keys()[state])
 		previous_state = state
 		if state in [State.ATTACK_GROUND, State.ATTACK_AIR]:
 			print("	Attack: ", current_attack.area.name)

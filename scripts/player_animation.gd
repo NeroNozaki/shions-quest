@@ -54,7 +54,7 @@ func get_desired_animation() -> StringName:
 			return &"idle"
 
 
-func start_windup(startup_time:float) -> void:
+func start_windup(startup_time:float, extra_startup:float) -> void:
 	if startup_time <= 0.0: return
 	in_windup = true
 
@@ -68,7 +68,7 @@ func start_windup(startup_time:float) -> void:
 	frame = 0
 	pause()
 
-	await get_tree().create_timer(startup_time).timeout
+	await get_tree().create_timer(startup_time+extra_startup).timeout
 
 	in_windup = false
 
@@ -82,7 +82,12 @@ func match_attack_animation(anim_name: StringName, attack:AttackManager.Attack) 
 
 	# animation should only playe during active + recovery
 	# startup is handled by the pause
-	var play_duration = attack.active + attack.recovery
+	var play_duration: float
+	if attack.has_windup:
+		play_duration = attack.active + attack.recovery - attack.extra_startup
+	else:
+		play_duration = attack.active + attack.recovery + attack.startup
+
 	if play_duration <= 0.01: play_duration = 0.01
 
 	var speed = frames / play_duration

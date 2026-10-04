@@ -112,7 +112,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("15_j2b1d")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"attackAir",
 "speed": 20.0
 }, {
@@ -132,7 +132,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_tk41t")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"attackB",
 "speed": 5.0
 }, {
@@ -158,7 +158,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("27_vau08")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"attackC",
 "speed": 5.0
 }, {
@@ -187,7 +187,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("35_1da1t")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"attackD",
 "speed": 5.0
 }, {
@@ -247,7 +247,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("30_g5jhy")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"jump_start",
 "speed": 10.0
 }, {
@@ -255,7 +255,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("31_holxr")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"land",
 "speed": 1.0
 }, {
@@ -304,14 +304,14 @@ size = Vector2(43, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lymks"]
 size = Vector2(13, 23)
 
-[node name="player" type="CharacterBody2D" unique_id=1008955377]
+[node name="player" type="CharacterBody2D" unique_id=1008955377 groups=["player"]]
 collision_mask = 4
 script = ExtResource("1_y4r1p")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=1416872492]
 position = Vector2(-1, -29)
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"idle"
+animation = &"attackA"
 offset = Vector2(12, 0)
 script = ExtResource("11_d2wvv")
 
