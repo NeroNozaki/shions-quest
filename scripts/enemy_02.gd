@@ -1,3 +1,4 @@
+@tool
 extends Enemy
 
 func _ready() -> void:
@@ -28,6 +29,7 @@ func _can_see_player() -> bool:
 	return global_position.distance_to(player.global_position) <= detection_range
 
 func _patrol_logic():
+	sprite.speed_scale = 1.0
 	patrol()
 	
 	# animation
@@ -60,7 +62,7 @@ func _chase_logic():
 
 	# animation
 	if hitstun_time <= 0.0 and sprite.animation != "hit":
-		sprite.sprite_frames.set_animation_speed("walk", 1.4)
+		sprite.speed_scale = 1.4
 		sprite.play("walk")
 
 	# close enough to player?

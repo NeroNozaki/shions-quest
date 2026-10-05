@@ -158,7 +158,8 @@ script = ExtResource("1_yjbun")
 [node name="enemy_animation" type="AnimatedSprite2D" parent="." unique_id=1189941587]
 position = Vector2(3, -16)
 sprite_frames = SubResource("SpriteFrames_nqwk7")
-animation = &"attack"
+animation = &"idle"
+flip_h = true
 
 [node name="ground_collision" type="CollisionShape2D" parent="." unique_id=850841471]
 position = Vector2(0.5, -2)

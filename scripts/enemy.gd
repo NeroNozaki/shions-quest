@@ -1,3 +1,4 @@
+@tool
 extends CharacterBody2D
 class_name Enemy
 
@@ -9,6 +10,13 @@ var previous_state = state
 @export var knockback_force: Vector2 = Vector2(120, -80)
 @export var move_speed: float = 40.0
 @export var patrol_distance: float = 80.0
+
+@export var start_facing_right := false:
+	set(value):
+		start_facing_right = value
+		direction = 1 if value else -1
+		_update_facing()
+
 
 @export var detection_range: float = 160.0
 @export var attack_range: float = 28.0
@@ -36,8 +44,10 @@ var is_flying := false
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready() -> void:
+	direction = 1 if start_facing_right else -1
 	_update_facing()
-	home = Vector2(global_position.x, global_position.y)
+
+	home = global_position
 	health = max_health
 	player = get_tree().get_first_node_in_group("player") as Player
 	previous_state = state
@@ -49,6 +59,7 @@ func _ready() -> void:
 	hurtbox.set_collision_mask_value(PhysicsLayers.PLAYER_ATTACK, true)   # only take damage from attacks
 	hurtbox.set_collision_mask_value(PhysicsLayers.PLAYER_HURTBOX, true)  # detect player body (for contact damage later)
 	
+	# connecting signals (if any)
 	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
 	
 	if sprite.sprite_frames.has_animation("fly"):
@@ -57,6 +68,7 @@ func _ready() -> void:
 		sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint(): return
 	if is_dead:
 		velocity.y += gravity * delta
 		move_and_slide()
@@ -178,7 +190,10 @@ func patrol() -> void:
 
 func _update_facing() -> void:
 	# Flip the whole sprite (and any child hitboxes that are under it)
-	sprite.scale.x = direction
+	var s = get_node_or_null("enemy_animation") as AnimatedSprite2D
+	if s == null: return
+	s.flip_h = direction < 0
+	notify_property_list_changed()
 
 func print_state_change():
 	if state != previous_state:

@@ -109,12 +109,14 @@ size = Vector2(20, 24)
 [node name="enemy01" type="CharacterBody2D" unique_id=677523928]
 collision_layer = 8
 collision_mask = 4
+motion_mode = 1
 script = ExtResource("1_l58q4")
 
 [node name="enemy_animation" type="AnimatedSprite2D" parent="." unique_id=1189941587]
 position = Vector2(1, -11)
 sprite_frames = SubResource("SpriteFrames_nqwk7")
 animation = &"attack"
+flip_h = true
 
 [node name="ground_collision" type="CollisionShape2D" parent="." unique_id=850841471]
 position = Vector2(0, -2)
