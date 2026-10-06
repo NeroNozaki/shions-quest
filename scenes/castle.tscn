@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://ra6gtfnyhk01"]
+
+[ext_resource type="Script" uid="uid://bs3lx0vlwewd" path="res://scripts/castle.gd" id="1_0ysgy"]
+[ext_resource type="Texture2D" uid="uid://l26j1av0bksh" path="res://assets/Sprites/Castle.png" id="1_bly62"]
+[ext_resource type="AudioStream" uid="uid://ttq8gxlxrl5p" path="res://assets/music/Final Fantasy VII - Victory Fanfare [HD].mp3" id="3_rjj26"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nqwk7"]
+size = Vector2(24, 32)
+
+[node name="castle" type="Area2D" unique_id=938713408]
+script = ExtResource("1_0ysgy")
+
+[node name="sprite" type="Sprite2D" parent="." unique_id=480189809]
+position = Vector2(0, -40)
+texture = ExtResource("1_bly62")
+
+[node name="end_zone" type="CollisionShape2D" parent="." unique_id=1388439974]
+position = Vector2(0, -16)
+shape = SubResource("RectangleShape2D_nqwk7")
+
+[node name="audio" type="AudioStreamPlayer" parent="." unique_id=1657382285 groups=["audio"]]
+stream = ExtResource("3_rjj26")
+volume_db = -10.0

@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://hb3et3s1iufw" path="res://assets/Backgrounds/Sky.png" id="2_fcv5n"]
 [ext_resource type="Texture2D" uid="uid://debxvcot6qsxk" path="res://assets/Backgrounds/Clouds.png" id="3_4v6gu"]
 [ext_resource type="Texture2D" uid="uid://bxwses1ihpyvr" path="res://assets/Backgrounds/Grass Mountains.png" id="4_nxjfj"]
+[ext_resource type="AudioStream" uid="uid://d31nhkpulcgnn" path="res://assets/music/Xenoblade Chronicles OST - A Friend On My Mind.mp3" id="6_4v6gu"]
 
 [node name="Menu" type="Control" unique_id=1897801583]
 layout_mode = 3
@@ -76,6 +77,9 @@ offset_right = 330.0
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("2_fbjtm")
 theme_override_font_sizes/font_size = 90
 text = "Shion's Quest"
@@ -109,6 +113,10 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_fbjtm")
 theme_override_font_sizes/font_size = 40
 text = "EXIT"
+
+[node name="audio" type="AudioStreamPlayer" parent="." unique_id=545939435 groups=["audio"]]
+stream = ExtResource("6_4v6gu")
+volume_db = -8.0
 
 [connection signal="pressed" from="VBoxContainer/PLAY" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/EXIT" to="." method="_on_exit_pressed"]

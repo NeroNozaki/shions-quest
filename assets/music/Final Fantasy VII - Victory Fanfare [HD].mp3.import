@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ttq8gxlxrl5p"
+path="res://.godot/imported/Final Fantasy VII - Victory Fanfare [HD].mp3-327cd82779bf58b72f96ae65ae0e5a35.mp3str"
+
+[deps]
+
+source_file="res://assets/music/Final Fantasy VII - Victory Fanfare [HD].mp3"
+dest_files=["res://.godot/imported/Final Fantasy VII - Victory Fanfare [HD].mp3-327cd82779bf58b72f96ae65ae0e5a35.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
