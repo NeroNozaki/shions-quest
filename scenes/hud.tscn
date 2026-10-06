@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dqjldk8v0vgs6"]
+
+[ext_resource type="Script" uid="uid://pc4tndkdvxhl" path="res://scripts/hud.gd" id="1_oo0fn"]
+[ext_resource type="FontFile" uid="uid://dwqkgas25lxu2" path="res://assets/Fonts/font.ttf" id="2_5ysmq"]
+
+[node name="hud" type="CanvasLayer" unique_id=404140473]
+script = ExtResource("1_oo0fn")
+
+[node name="score" type="Label" parent="." unique_id=557386818]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -73.0
+offset_bottom = 30.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("2_5ysmq")
+theme_override_font_sizes/font_size = 25
+text = "00000"
+horizontal_alignment = 1

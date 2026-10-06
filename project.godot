@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="shion's-quest"
-run/main_scene="uid://dafvfvyrvryks"
+run/main_scene="uid://ctl32w4thhh80"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -28,6 +28,7 @@ window/stretch/mode="viewport"
 [global_group]
 
 player=""
+enemies=""
 
 [input]
 

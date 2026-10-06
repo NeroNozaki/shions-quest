@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://chsua6tol1og7"]
+
+[ext_resource type="Texture2D" uid="uid://bbfy3cln3gadr" path="res://assets/Sprites/Enemy01/attack_projectile.png" id="1_04rhl"]
+[ext_resource type="Script" uid="uid://cbtct0bvowdbg" path="res://scripts/enemy_01_projectile.gd" id="1_x6cmr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nqwk7"]
+size = Vector2(12, 24)
+
+[node name="enemy01_projectile" type="Area2D" unique_id=1006678025]
+script = ExtResource("1_x6cmr")
+
+[node name="sprite" type="Sprite2D" parent="." unique_id=1550343896]
+texture = ExtResource("1_04rhl")
+
+[node name="hitbox" type="CollisionShape2D" parent="." unique_id=219804993]
+position = Vector2(10, 0)
+rotation = 0.008726646
+shape = SubResource("RectangleShape2D_nqwk7")

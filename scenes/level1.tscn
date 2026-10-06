@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bxwses1ihpyvr" path="res://assets/Backgrounds/Grass Mountains.png" id="3_ru4tf"]
 [ext_resource type="Texture2D" uid="uid://d2fklnwu2ncf2" path="res://assets/Tiles/Tileset Inside.png" id="5_6sh32"]
 [ext_resource type="PackedScene" uid="uid://dxows66itule7" path="res://scenes/enemies/enemy02.tscn" id="6_6sh32"]
+[ext_resource type="PackedScene" uid="uid://8y5eopdbsoi6" path="res://scenes/enemies/enemy01.tscn" id="6_ejswk"]
+[ext_resource type="PackedScene" uid="uid://chsua6tol1og7" path="res://scenes/enemies/enemy_01_projectile.tscn" id="7_bbk5w"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_ejswk"]
 tile_data = PackedInt32Array(0, 0, 6, 65536, 0, 7, 1, 65536, 6, 65537, 65536, 7, 2, 131072, 6, 65538, 131072, 7, 3, 196608, 6, 65539, 196608, 7, 4, 262144, 6, 65540, 262144, 7, 5, 327680, 6, 65541, 327680, 7)
@@ -470,7 +472,7 @@ centered = false
 [node name="Clouds" type="Parallax2D" parent="." unique_id=1569683869]
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(320, 0)
-autoscroll = Vector2(1, 0)
+autoscroll = Vector2(5, 0)
 repeat_times = 1000
 
 [node name="clouds" type="Sprite2D" parent="Clouds" unique_id=812611026]
@@ -496,5 +498,21 @@ tile_set = SubResource("TileSet_nqwk7")
 [node name="enemies" type="Node" parent="." unique_id=517942663]
 
 [node name="enemy02" parent="enemies" unique_id=677523928 instance=ExtResource("6_6sh32")]
-position = Vector2(498, 304)
+position = Vector2(538, 303)
 start_facing_right = true
+
+[node name="enemy01" parent="enemies" unique_id=1179990801 instance=ExtResource("6_ejswk")]
+position = Vector2(513, 218)
+hover_amplitude = 40.0
+hover_speed = 2.0
+projectile_scene = ExtResource("7_bbk5w")
+shoot_cooldown = 2.0
+orbit_distance = 90.0
+max_health = 2
+knockback_force = Vector2(120, -80)
+move_speed = 50.0
+patrol_distance = 100.0
+start_facing_right = false
+detection_range = 220.0
+attack_range = 90.0
+attack_cooldown = 2.0

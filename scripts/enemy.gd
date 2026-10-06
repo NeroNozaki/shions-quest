@@ -2,7 +2,8 @@
 extends CharacterBody2D
 class_name Enemy
 
-enum AIState { PATROL, CHASE, ATTACK, HURT }
+signal enemy_death
+enum AIState { PATROL, CHASE, ORBIT, ATTACK, HURT }
 var state := AIState.PATROL
 var previous_state = state
 
@@ -44,6 +45,7 @@ var is_flying := false
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready() -> void:
+	add_to_group("enemies")
 	direction = 1 if start_facing_right else -1
 	_update_facing()
 
@@ -161,6 +163,7 @@ func _flash() -> void:
 
 func die() -> void:
 	is_dead = true
+	emit_signal("enemy_death")
 	
 	hurtbox_shape.set_deferred("disabled", true)
 	hurtbox.set_deferred("monitoring", false)

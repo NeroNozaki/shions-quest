@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c1qh3m13nw4bu" path="res://scripts/main.gd" id="1_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://cxiq3sf00qkrc" path="res://scenes/player.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://0jhw86p43anj" path="res://scenes/level1.tscn" id="2_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://dqjldk8v0vgs6" path="res://scenes/hud.tscn" id="4_jyhfs"]
 
 [node name="main" type="Node" unique_id=336037882]
 script = ExtResource("1_tbgi4")
@@ -11,3 +12,5 @@ script = ExtResource("1_tbgi4")
 
 [node name="player" parent="." unique_id=1008955377 instance=ExtResource("2_sugp2")]
 position = Vector2(322, 304)
+
+[node name="hud" parent="." unique_id=312811901 instance=ExtResource("4_jyhfs")]

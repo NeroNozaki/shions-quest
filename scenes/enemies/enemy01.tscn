@@ -111,6 +111,18 @@ collision_layer = 8
 collision_mask = 4
 motion_mode = 1
 script = ExtResource("1_l58q4")
+hover_amplitude = null
+hover_speed = null
+shoot_cooldown = null
+orbit_distance = null
+max_health = null
+knockback_force = null
+move_speed = null
+patrol_distance = null
+start_facing_right = null
+detection_range = null
+attack_range = null
+attack_cooldown = null
 
 [node name="enemy_animation" type="AnimatedSprite2D" parent="." unique_id=1189941587]
 position = Vector2(1, -11)
