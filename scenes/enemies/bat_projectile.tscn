@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://chsua6tol1og7"]
 
-[ext_resource type="Texture2D" uid="uid://bbfy3cln3gadr" path="res://assets/Sprites/Enemy01/attack_projectile.png" id="1_04rhl"]
-[ext_resource type="Script" uid="uid://cbtct0bvowdbg" path="res://scripts/enemy_01_projectile.gd" id="1_x6cmr"]
+[ext_resource type="Script" uid="uid://cbtct0bvowdbg" path="res://scripts/enemy/bat_projectile.gd" id="1_bhvrx"]
+[ext_resource type="Texture2D" uid="uid://bbfy3cln3gadr" path="res://assets/Sprites/Enemy01/attack_projectile.png" id="2_8sg4i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nqwk7"]
 size = Vector2(12, 24)
 
-[node name="enemy01_projectile" type="Area2D" unique_id=1006678025]
-script = ExtResource("1_x6cmr")
+[node name="bat_projectile" type="Area2D" unique_id=1006678025]
+script = ExtResource("1_bhvrx")
 
 [node name="sprite" type="Sprite2D" parent="." unique_id=1550343896]
-texture = ExtResource("1_04rhl")
+texture = ExtResource("2_8sg4i")
 
 [node name="hitbox" type="CollisionShape2D" parent="." unique_id=219804993]
 position = Vector2(10, 0)

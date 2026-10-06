@@ -15,7 +15,7 @@ var orbiting := false
 
 func _ready() -> void:
 	state = AIState.PATROL
-	projectile_scene = load("res://scenes/enemies/enemy_01_projectile.tscn")
+	projectile_scene = load("res://scenes/enemies/bat_projectile.tscn")
 	is_flying = true
 	max_health = 2
 	move_speed = 50.0

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dxows66itule7"]
 
-[ext_resource type="Script" uid="uid://cchfytil531pp" path="res://scripts/enemy_02.gd" id="1_yjbun"]
+[ext_resource type="Script" uid="uid://cchfytil531pp" path="res://scripts/enemy/slug.gd" id="1_yjbun"]
 [ext_resource type="Texture2D" uid="uid://b60h4vq15225s" path="res://assets/Sprites/Enemy02/attack01.png" id="2_0lg75"]
 [ext_resource type="Texture2D" uid="uid://b0rqnyumom8jw" path="res://assets/Sprites/Enemy02/attack02.png" id="3_lsnsy"]
 [ext_resource type="Texture2D" uid="uid://ledq1hgl12b7" path="res://assets/Sprites/Enemy02/attack03.png" id="4_thsr5"]
@@ -150,7 +150,7 @@ size = Vector2(17, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1en53"]
 
-[node name="enemy02" type="CharacterBody2D" unique_id=677523928]
+[node name="slug" type="CharacterBody2D" unique_id=677523928]
 collision_layer = 8
 collision_mask = 4
 script = ExtResource("1_yjbun")
@@ -159,6 +159,7 @@ script = ExtResource("1_yjbun")
 position = Vector2(3, -16)
 sprite_frames = SubResource("SpriteFrames_nqwk7")
 animation = &"idle"
+frame_progress = 0.65614164
 flip_h = true
 
 [node name="ground_collision" type="CollisionShape2D" parent="." unique_id=850841471]

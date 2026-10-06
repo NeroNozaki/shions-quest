@@ -311,6 +311,7 @@ script = ExtResource("1_y4r1p")
 [node name="camera" type="Camera2D" parent="." unique_id=384387103]
 offset = Vector2(0, -70)
 process_callback = 0
+limit_enabled = false
 limit_left = -1000
 limit_bottom = 800
 position_smoothing_enabled = true
